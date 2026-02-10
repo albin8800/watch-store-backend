@@ -1,3 +1,4 @@
+import Category from '../models/Category.js';
 import Product from '../models/Product.js';
 
 export const createProduct = async (req, res) => {
@@ -5,7 +6,7 @@ export const createProduct = async (req, res) => {
         const {
             name,
             brand,
-            category,
+            categoryId,
             price,
             mrp,
             description,
@@ -18,10 +19,18 @@ export const createProduct = async (req, res) => {
             return res.status(400).json({ message: "Product image is required" });
         }
 
+        if(!categoryId) {
+            return res.status(400).json({ message: "Category is required"});
+        }
+        const category = await Category.findById(categoryId);
+        if(!category) {
+            return res.status(404).json({ message: "Category not found" });
+        }
+
         const product = await Product.create({
             name,
             brand,
-            category,
+            categoryId,
             price,
             mrp,
             description,
@@ -30,6 +39,10 @@ export const createProduct = async (req, res) => {
             isWidest,
             image: req.file.path,
         });
+
+        category.count += 1;
+        await category.save();
+
         res.status(201).json({
             message: "Product created succesfully",
             product,
@@ -48,6 +61,10 @@ export const getProducts = async (req, res) => {
 
         const filter = {};
 
+        if (req.query.category) {
+            filter.category = req.query.category;
+        }
+
         if (popular === true) {
             filter.isPopular = true;
         }
@@ -55,7 +72,7 @@ export const getProducts = async (req, res) => {
             filter.isWidest = true;
         }
 
-        const products = await Product.find(filter).sort({ createdAt: -1 });
+        const products = await Product.find(filter).sort({ createdAt: -1 }).populate("category", "name");
 
         res.status(200).json(products);
 
