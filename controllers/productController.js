@@ -62,7 +62,7 @@ export const getProducts = async (req, res) => {
         const filter = {};
 
         if (req.query.category) {
-            filter.category = req.query.category;
+            filter.categoryId = req.query.category;
         }
 
         if (popular === true) {
@@ -72,7 +72,7 @@ export const getProducts = async (req, res) => {
             filter.isWidest = true;
         }
 
-        const products = await Product.find(filter).sort({ createdAt: -1 }).populate("category", "name");
+        const products = await Product.find(filter).sort({ createdAt: -1 }).populate("categoryId", "name");
 
         res.status(200).json(products);
 
