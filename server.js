@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/products", productRoutes);
-console.log("Cloudinary Key: ", process.env.CLOUDINARY_API_KEY)
+
 
 connectDB();
 
