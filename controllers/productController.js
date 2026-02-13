@@ -57,6 +57,11 @@ export const createProduct = async (req, res) => {
 
 export const getProducts = async (req, res) => {
     try {
+
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit);
+        const skip = (page -1) * limit;
+
         const { popular, wide } = req.query;
 
         const filter = {};
@@ -72,9 +77,20 @@ export const getProducts = async (req, res) => {
             filter.isWidest = true;
         }
 
-        const products = await Product.find(filter).sort({ createdAt: -1 }).populate("categoryId", "name");
+        const totalProducts = await Product.countDocuments(filter);
 
-        res.status(200).json(products);
+        const products = await Product.find(filter)
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .populate("categoryId", "name")
+
+        res.status(200).json({
+            products,
+            currentPage: page,
+            totalPages: Math.ceil(totalProducts / limit),
+            totalProducts,
+        });
 
     } catch (error) {
         res.status(500).json({
