@@ -5,7 +5,7 @@ export const addCategory = async(req, res) => {
         const { name } = req.body;
 
         if(!name || !req.file) {
-            return res.status(400),json({ message: "Name and Image are required" })
+            return res.status(400).json({ message: "Name and Image are required" })
         }
 
         const exists = await Category.findOne({
@@ -38,7 +38,7 @@ export const getCategories = async (req, res) => {
     }
 }
 
-export const updateCategory = async () => {
+export const updateCategory = async (req, res) => {
     try {
         const { id } = req.params;
 
