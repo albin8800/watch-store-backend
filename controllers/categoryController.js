@@ -30,8 +30,26 @@ export const addCategory = async(req, res) => {
 
 export const getCategories = async (req, res) => {
     try {
-        const categories = await Category.find().sort({ createdAt: -1});
-        res.json(categories);
+
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+
+        const skip = (page - 1) * limit;
+
+        const totalCategories = await Category.countDocuments();
+
+        const categories = await Category.find()
+        .sort({ createdAt: -1})
+        .skip(skip)
+        .limit(limit);
+
+        const totalPages = Math.ceil(totalCategories / limit);
+        res.json({
+            categories,
+            currentPage: page,
+            totalPages,
+            totalCategories
+        });
     } catch (error) {
         console.error(error);
       res.status(500).json({ message: "Failed to fetch Categories"})  
