@@ -74,10 +74,10 @@ export const getProducts = async (req, res) => {
             filter.categoryId = req.query.category;
         }
 
-        if (popular === true) {
+        if (popular === "true") {
             filter.isPopular = true;
         }
-        if (wide === true) {
+        if (wide === "true") {
             filter.isWidest = true;
         }
 
