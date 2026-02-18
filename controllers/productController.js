@@ -13,8 +13,9 @@ export const createProduct = async (req, res) => {
             stock,
         } = req.body
 
-        const isPopular = req.body.isPopular === "true";
-        const isWidest = req.body.isWidest === "true";
+        const isPopular = JSON.parse(req.body.isPopular || "false");
+        const isWidest = JSON.parse(req.body.isWidest || "false");
+
 
         if (!req.file) {
             return res.status(400).json({ message: "Product image is required" });
