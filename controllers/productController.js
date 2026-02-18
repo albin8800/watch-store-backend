@@ -11,9 +11,10 @@ export const createProduct = async (req, res) => {
             mrp,
             description,
             stock,
-            isPopular,
-            isWidest
         } = req.body
+
+        const isPopular = req.body.isPopular === "true";
+        const isWidest = req.body.isWidest === "true";
 
         if (!req.file) {
             return res.status(400).json({ message: "Product image is required" });
@@ -26,6 +27,8 @@ export const createProduct = async (req, res) => {
         if(!category) {
             return res.status(404).json({ message: "Category not found" });
         }
+
+
 
         const product = await Product.create({
             name,
