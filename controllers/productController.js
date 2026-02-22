@@ -134,7 +134,7 @@ export const updateProduct = async (req, res) => {
 
     const product = await Product.findById(id);
 
-    if(!products) {
+    if(!product) {
         return res.status(404).json({
             message: "Product not Found"
         });
